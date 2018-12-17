@@ -1,7 +1,7 @@
 # LimeSurvey Auth Surveys
-This plugin allow selected surveys to be displayed/submited only to/by authenticated users.
+This plugin allows selected surveys to be displayed/submited only to/by authenticated users.
 
-Every survey can have different configuration/policy.
+Every survey can have a different configuration/policy.
 
 ## Installation instructions
 
