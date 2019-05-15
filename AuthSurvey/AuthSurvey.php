@@ -66,7 +66,7 @@ class AuthSurvey extends Limesurvey\PluginManager\PluginBase
         if ($flag) {
             // Check if user is authenticated
             if (is_null(Yii::app()->user->getId())) {
-                throw new CHttpException(401, gT("We are sorry but you dont have permissions to do this."));
+                throw new CHttpException(401, gT("We are sorry but you do not have permissions to do this."));
             }
         }
     }
