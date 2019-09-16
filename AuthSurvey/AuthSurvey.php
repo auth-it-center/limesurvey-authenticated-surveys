@@ -18,7 +18,7 @@
 class AuthSurvey extends Limesurvey\PluginManager\PluginBase
 {
     protected $storage = 'DbStorage';
-    static protected $description = 'This plugin forces selected surveys to be displayed/submited only to/by authenticated users';
+    static protected $description = 'This plugin forces selected surveys to be displayed/submitted only to/by authenticated users';
     static protected $name = 'AuthSurvey';
 
     protected $settings = [];
