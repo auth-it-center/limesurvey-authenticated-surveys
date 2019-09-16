@@ -1,10 +1,10 @@
 <?php
 
 /**
- * LimeSurvey Auth permited Surveys
+ * LimeSurvey Auth permitted Surveys
  *
  * This plugin forces selected surveys to
- * be displayed/submited only to/by authenticated users
+ * be displayed/submitted only to/by authenticated users
  *
  * Author: Panagiotis Karatakis <karatakis@it.auth.gr>
  * Licence: GPL3
@@ -28,24 +28,28 @@ class AuthSurvey extends Limesurvey\PluginManager\PluginBase
         $this->subscribe('beforeSurveySettings');
         $this->subscribe('newSurveySettings');
         $this->subscribe('beforeSurveyPage');
+        $this->subscribe('getGlobalBasePermissions');
     }
 
     public function beforeSurveySettings()
     {
-        $event = $this->event;
-        $current = $this->get('auth_protection_enabled', 'Survey', $event->get('survey'));
-        $event->set('surveysettings.' . $this->id, [
-            'name' => get_class($this),
-            'settings' => [
-                'auth_protection_enabled' => [
-                    'type' => 'checkbox',
-                    'label' => 'Enabled',
-                    'help' => 'Only authenticated users should see the survey ?',
-                    'default' => false,
-                    'current' => $current,
+        $permission = Permission::model()->hasGlobalPermission('plugin_settings', 'update');
+        if ($permission) {
+            $event = $this->event;
+            $current = $this->get('auth_protection_enabled', 'Survey', $event->get('survey'));
+            $event->set('surveysettings.' . $this->id, [
+                'name' => get_class($this),
+                'settings' => [
+                    'auth_protection_enabled' => [
+                        'type' => 'checkbox',
+                        'label' => 'Enabled',
+                        'help' => 'Only authenticated users should see the survey ?',
+                        'default' => false,
+                        'current' => $current,
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        }
     }
 
     public function newSurveySettings()
@@ -66,8 +70,24 @@ class AuthSurvey extends Limesurvey\PluginManager\PluginBase
         if ($flag) {
             // Check if user is authenticated
             if (is_null(Yii::app()->user->getId())) {
-                throw new CHttpException(401, gT("We are sorry but you dont have permissions to do this."));
+                throw new CHttpException(401, gT("We are sorry but you do not have permissions to do this."));
             }
         }
+    }
+
+    public function getGlobalBasePermissions() {
+        $this->getEvent()->append('globalBasePermissions',array(
+            'plugin_settings' => array(
+                'create' => false,
+                'update' => true, // allow only update permission to display
+                'delete' => false,
+                'import' => false,
+                'export' => false,
+                'read' => false,
+                'title' => gT("Save Plugin Settings"),
+                'description' => gT("Allow user to save plugin settings"),
+                'img' => 'usergroup'
+            ),
+        ));
     }
 }
